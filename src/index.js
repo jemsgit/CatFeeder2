@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import VuePullRefresh from 'vue-pull-refresh';  
 import bluetoothService from './bluetoothService';
 
 import './styles.css'
@@ -17,9 +16,9 @@ var cordovaApp = {
     onDeviceReady: function() {
         createVueApp();
     },
-  };
+};
   
-  cordovaApp.initialize();
+cordovaApp.initialize();
 
 let intevalId = null;
 function getColor(value){

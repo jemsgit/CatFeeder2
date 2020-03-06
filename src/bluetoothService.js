@@ -24,11 +24,9 @@ class BluetoothService {
                 this.deviceId = uuid;
                 this.service = device.characteristics.find(function(item){
                     return item.properties.indexOf('Read') > -1 && item.properties.indexOf('WriteWithoutResponse') > -1
-                })
-                console.log('connected');
+                });
             }
         } catch(e) {
-            console.log('error connect')
             result = false;
         }
         return result;
@@ -52,10 +50,13 @@ class BluetoothService {
     }
 
     listen() {
-        bluetoothSerial.subscribe('>', (data) => {
-            this.debug('listen ' + data);
-            console.log(data);
-            this.incomingMessage = data;
+        ble.startNotification(this.deviceId, this.service, this.characteristic, (data) => {
+            message += bytesToString(data);
+            if(message.indexOf('\r\n\r\n') != -1){
+                this.incomingMessage = message.replace(/\r\n\r\n/g, '');
+                success(this.incomingMessage);
+                this.incomingMessage = null;
+            }
         }, () => {console.log('error')});
     }
 
