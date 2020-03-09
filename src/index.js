@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import bluetoothService from './bluetoothService';
-
+import Activity from './components/activity/activity.vue';
+import DeviceList from './components/device-list/device-list.vue';
 import './styles.css'
 
 var cordovaApp = {
@@ -8,7 +9,7 @@ var cordovaApp = {
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
-  
+
     // deviceready Event Handler
     //
     // Bind any cordova events here. Common events are:
@@ -17,18 +18,31 @@ var cordovaApp = {
         createVueApp();
     },
 };
-  
+
 cordovaApp.initialize();
 
 let intevalId = null;
-function getColor(value){
-    var hue=((1-value)*200).toString(10);
-    return ["hsl(",hue,",100%,50%)"].join("");
+
+function getColor(value) {
+    var hue = ((1 - value) * 200).toString(10);
+    return ["hsl(", hue, ",100%,50%)"].join("");
 }
 
 function createVueApp() {
     let vueApp = new Vue({
         el: '#app',
+        template: `
+            <DeviceList
+                isVisible="showList"
+                onRefresh="onRefresh"
+                devices="devices"
+                onSelectDevice="selectDevice"
+                ></DeviceList>
+            <Activity
+                isVisible="showContent"
+                onDisconnect="disconnect"
+            ></Activity>`,
+        components: { Activity, DeviceList },
         data: function() {
             return {
                 devices: [],
@@ -37,23 +51,23 @@ function createVueApp() {
                 temp: null,
                 debug: '',
                 customCommand: ''
-             }
+            }
         },
         methods: {
             getDeviceList: async function() {
-                try{
+                try {
                     this.devices = [];
                     let devices = await bluetoothService.getDevices();
                     this.devices = devices;
-                } catch(e) {
+                } catch (e) {
                     console.log(e);
                 }
             },
             selectDevice: async function(device) {
-                try{
+                try {
                     this.updateLog(device)
                     let connected = await bluetoothService.connectToDevice(device.id);
-                    if(connected) {
+                    if (connected) {
                         this.updateLog('connected')
                         this.deviceId = device.id;
                         this.showList = false;
@@ -64,13 +78,13 @@ function createVueApp() {
                     } else {
                         this.updateLog('connect failed');
                     }
-                } catch(e) {
+                } catch (e) {
                     this.updateLog('connect failed');
                     console.log(e);
                 }
             },
             startMonitoring: function() {
-                intevalId = setInterval(async () => {
+                intevalId = setInterval(async() => {
                     this.temp = await bluetoothService.getTemperature();
                 }, 2000);
             },
@@ -78,20 +92,20 @@ function createVueApp() {
                 clearInterval(intevalId);
             },
             disconnect: async function() {
-                try{
+                try {
                     this.stopMonitoring();
                     await bluetoothService.disconnect();
                     this.updateLog('disconnected');
                     this.showList = true;
                     this.showContent = false;
-                } catch(e) {
+                } catch (e) {
                     this.updateLog('err disconnect');
                     console.log(e)
                 }
             },
             onRefresh: function() {
                 this.updateLog('refresh');
-                if(this.showList) {
+                if (this.showList) {
                     this.getDeviceList();
                 }
             },
@@ -109,29 +123,26 @@ function createVueApp() {
             }
         },
         computed: {
-            temperature: function () {
-                if(this.temp) {
+            temperature: function() {
+                if (this.temp) {
                     this.updateLog(this.temp);
                     let temp = parseInt(this.temp, 16);
                     return temp - 40 + ' °C';
-                } return '';
+                }
+                return '';
             },
-            background: function(){
+            background: function() {
                 console.log(this.temperature);
                 let value = this.temperature;
-                if(!this.temperature || this.temperature < 0){
+                if (!this.temperature || this.temperature < 0) {
                     value = 0;
-                } else if(this.temperature > 100) {
+                } else if (this.temperature > 100) {
                     value = 100;
                 }
                 return getColor(value);
             }
-          }
-      })
-      vueApp.setBTDebug();
-      vueApp.getDeviceList();
-      
-  }
-
-
-  
+        }
+    })
+    vueApp.setBTDebug();
+    vueApp.getDeviceList();
+}
