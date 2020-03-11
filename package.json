@@ -16,6 +16,7 @@
         "cordova-plugin-ble-central": "^1.2.4",
         "cordova-plugin-webpack": "^0.4.7",
         "vue": "^2.6.10",
+        "vue-material": "^1.0.0-beta-11",
         "vue-pull-refresh": "^0.2.7"
     },
     "devDependencies": {

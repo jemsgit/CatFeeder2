@@ -4,7 +4,7 @@
             <a class="refresh-link" v-on:click.prevent="onRefresh">REFRESH</a>
         </span>
         <ul>
-            <li v-for="device in devices" v-on:click="selectDevice(device)" class="device-list__item">
+            <li v-for="device in devices" v-on:click="onSelectDevice(device)" class="device-list__item">
                 {{ device.name }}
             </li>
         </ul>
@@ -13,7 +13,8 @@
 
 <script>
 export default {
-    props: ['devices', 'selectDevice', 'onRefresh', 'isVisible']
+    props: ['devices', 'onSelectDevice', 'onRefresh', 'isVisible'],
+    name: 'DeviceList'
 }
 </script>
 
