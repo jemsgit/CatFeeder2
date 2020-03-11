@@ -23,25 +23,9 @@ cordovaApp.initialize();
 
 let intevalId = null;
 
-function getColor(value) {
-    var hue = ((1 - value) * 200).toString(10);
-    return ["hsl(", hue, ",100%,50%)"].join("");
-}
-
 function createVueApp() {
     let vueApp = new Vue({
         el: '#app',
-        template: `
-            <DeviceList
-                isVisible="showList"
-                onRefresh="onRefresh"
-                devices="devices"
-                onSelectDevice="selectDevice"
-                ></DeviceList>
-            <Activity
-                isVisible="showContent"
-                onDisconnect="disconnect"
-            ></Activity>`,
         components: { Activity, DeviceList },
         data: function() {
             return {
@@ -92,6 +76,7 @@ function createVueApp() {
                 clearInterval(intevalId);
             },
             disconnect: async function() {
+                console.log(12312)
                 try {
                     this.stopMonitoring();
                     await bluetoothService.disconnect();
@@ -130,19 +115,8 @@ function createVueApp() {
                     return temp - 40 + ' °C';
                 }
                 return '';
-            },
-            background: function() {
-                console.log(this.temperature);
-                let value = this.temperature;
-                if (!this.temperature || this.temperature < 0) {
-                    value = 0;
-                } else if (this.temperature > 100) {
-                    value = 100;
-                }
-                return getColor(value);
             }
         }
     })
-    vueApp.setBTDebug();
     vueApp.getDeviceList();
 }

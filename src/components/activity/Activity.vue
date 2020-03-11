@@ -1,6 +1,6 @@
 <template>
-    <div v-if="isVisible" class="content">
-        <button v-on:click="onDisconnect()" class="content__button">
+    <div v-if="isvisible" class="content">
+        <button @click="onDisconnect()" class="content__button">
             Disconnect
         </button>
     </div>
@@ -8,7 +8,12 @@
 
 <script>
 export default {
-    props: ['onDisconnect', 'isVisible'],
-    name: 'Activity'
+    name: 'activity',
+    props: ['isvisible'],
+    methods: {
+        onDisconnect(e) {
+            this.$emit('ondisconnect', e);
+        }
+    }
 }
 </script>

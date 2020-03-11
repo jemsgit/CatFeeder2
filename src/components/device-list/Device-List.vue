@@ -1,10 +1,15 @@
 <template>
-    <div v-if="isVisible" class="device-list">
+    <div v-if="isvisible" class="device-list">
         <span class="device-list__title">Список устройств
             <a class="refresh-link" v-on:click.prevent="onRefresh">REFRESH</a>
         </span>
         <ul>
-            <li v-for="device in devices" v-on:click="onSelectDevice(device)" class="device-list__item">
+            <li
+                v-for="device in devices"
+                v-on:click="onSelectDevice(device)"
+                v-bind:key="device.id"
+                class="device-list__item"
+            >
                 {{ device.name }}
             </li>
         </ul>
@@ -13,11 +18,19 @@
 
 <script>
 export default {
-    props: ['devices', 'onSelectDevice', 'onRefresh', 'isVisible'],
-    name: 'DeviceList'
+    props: ['devices', 'isvisible'],
+    name: 'device-list',
+    methods: {
+        onRefresh(e) {
+            this.$emit('onrefresh', e);
+        },
+        onSelectDevice(device) {
+            this.$emit('onselectdevice', device);
+        }
+    }
 }
 </script>
 
 <style scoped>
- @import './device-list.css';
+    @import './device-list.css';
 </style>
