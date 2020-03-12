@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import { Button, Slider, Spin, TimePicker } from 'ant-design-vue';
+import vueBemCn from 'vue-bem-cn';
 import bluetoothService from './bluetoothService';
 import Activity from './components/activity/activity.vue';
 import DeviceList from './components/device-list/device-list.vue';
 import 'ant-design-vue/dist/antd.css';
 import './styles.css';
 
+Vue.use(vueBemCn, {});
 Vue.use(Button);
 Vue.use(Slider);
 Vue.use(Spin);

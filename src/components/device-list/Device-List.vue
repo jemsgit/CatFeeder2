@@ -23,7 +23,9 @@ export default {
     props: ['isvisible'],
     name: 'device-list',
     data: () => {
-        devices: []
+        return {
+            devices: []
+        }
     },
     mounted: () => {
 
@@ -36,7 +38,7 @@ export default {
         onRefresh(e) {
             this.getDevices();
         },
-        onSelectDevice(device) {
+        async onSelectDevice(device) {
             let connected = await bluetoothService.connectToDevice(device.id);
             if (connected) {
                 this.$emit('onselectdevice', device);
