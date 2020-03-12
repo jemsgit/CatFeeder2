@@ -10,7 +10,7 @@
                 v-bind:key="device.id"
                 class="device-list__item"
             >
-                {{ device.name }}
+                {{ device.name || device.id }}
             </li>
         </ul>
     </div>

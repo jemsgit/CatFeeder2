@@ -6,27 +6,30 @@ class BluetoothService {
         this.service = null;
         this.incomingMessage = null;
         this.error = null;
-        this.regex = /([0-9A-Z]{2}\s[0-9A-Z]{2}\s[0-9A-Z]{2})/g;
-        this.maxTimeToSearch = 10;
-        this.servicesToSearch = []
+        this.maxTimeToSearch = 30;
+        this.servicesToSearch = [];
     }
 
-    async getDevices() {
-        return await promisify(ble.scan.bind(ble, this.servicesToSearc, this.maxTimeToSearch))
+    getDevices(updateDeviceList) {
+        ble.scan(this.servicesToSearch, this.maxTimeToSearch, (data) => {
+            updateDeviceList(data)
+        })
     }
 
     async connectToDevice(uuid) {
         let result = false;
         ble.stopScan(() => {});
-        try{
+        try {
             let device = await promisify(ble.connect.bind(ble, uuid));
-            if(device) {
+            if (device) {
                 this.deviceId = uuid;
-                this.service = device.characteristics.find(function(item){
-                    return item.properties.indexOf('Read') > -1 && item.properties.indexOf('WriteWithoutResponse') > -1
+                this.service = device.characteristics.find(function(item) {
+                    return item.properties.includes('Read') &&
+                        item.properties.includes('WriteWithoutResponse');
                 });
+                result = true;
             }
-        } catch(e) {
+        } catch (e) {
             result = false;
         }
         return result;
@@ -39,38 +42,37 @@ class BluetoothService {
             this.deviceId = null;
             this.service = null;
             result = true;
-        } catch(e) {
+        } catch (e) {
             result = false;
         }
         return result;
     }
 
     async sendData(data) {
-        return await this.promisify(ble.write.bind(ble, this.deviceId, this.service, stringToBytes(data)));
+        return await this.promisify(
+            ble.write.bind(ble, this.deviceId, this.service, stringToBytes(data)));
     }
 
     listen() {
         ble.startNotification(this.deviceId, this.service, this.characteristic, (data) => {
             message += bytesToString(data);
-            if(message.indexOf('\r\n\r\n') != -1){
+            if (message.includes('\r\n\r\n')) {
                 this.incomingMessage = message.replace(/\r\n\r\n/g, '');
                 success(this.incomingMessage);
                 this.incomingMessage = null;
             }
-        }, () => {console.log('error')});
+        }, () => { console.log('error') });
     }
 
     async getAnswer() {
         return new Promise((res, rej) => {
             let intId = setInterval(() => {
-                if(this.incomingMessage) {
+                if (this.incomingMessage) {
                     res(this.incomingMessage);
-                    this.debug('<<' + this.incomingMessage);
                     this.incomingMessage = null;
                     clearInterval(intId);
-                } else if(this.error) {
+                } else if (this.error) {
                     rej(this.error);
-                    this.debug('<<' + this.error);
                     this.error = null;
                     clearInterval(intId);
                 }

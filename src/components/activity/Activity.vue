@@ -1,8 +1,6 @@
 <template>
-    <div v-if="isvisible" class="content">
-        <button @click="onDisconnect()" class="content__button">
-            Disconnect
-        </button>
+    <div class="content">
+        <span style='color: red'>12321</span>
     </div>
 </template>
 

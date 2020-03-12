@@ -26,7 +26,7 @@ let intevalId = null;
 function createVueApp() {
     let vueApp = new Vue({
         el: '#app',
-        components: { Activity, DeviceList },
+        components: { DeviceList, Activity },
         data: function() {
             return {
                 devices: [],
@@ -38,14 +38,9 @@ function createVueApp() {
             }
         },
         methods: {
-            getDeviceList: async function() {
-                try {
-                    this.devices = [];
-                    let devices = await bluetoothService.getDevices();
-                    this.devices = devices;
-                } catch (e) {
-                    console.log(e);
-                }
+            getDeviceList: function() {
+                this.devices = [];
+                bluetoothService.getDevices((device) => { this.devices.push(device) });
             },
             selectDevice: async function(device) {
                 try {
@@ -56,9 +51,7 @@ function createVueApp() {
                         this.deviceId = device.id;
                         this.showList = false;
                         this.showContent = true;
-                        await bluetoothService.initElm();
                         this.updateLog('elm inited');
-                        this.startMonitoring();
                     } else {
                         this.updateLog('connect failed');
                     }
@@ -66,11 +59,6 @@ function createVueApp() {
                     this.updateLog('connect failed');
                     console.log(e);
                 }
-            },
-            startMonitoring: function() {
-                intevalId = setInterval(async() => {
-                    this.temp = await bluetoothService.getTemperature();
-                }, 2000);
             },
             stopMonitoring: function() {
                 clearInterval(intevalId);
@@ -99,8 +87,8 @@ function createVueApp() {
             },
             updateLog: function(data) {
                 this.debug += '\r\n' + data;
-                var debugElement = document.querySelector(".debug p");
-                debugElement.scrollTop = debugElement.scrollHeight;
+                //var debugElement = document.querySelector(".debug p");
+                //debugElement.scrollTop = debugElement.scrollHeight;
             },
             sendCustomCommand: async function() {
                 await bluetoothService.sendData(this.customCommand);

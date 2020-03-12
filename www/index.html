@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <title>CatFeeder</title>
@@ -13,16 +13,8 @@
 <body>
     <div id="app">
         <content>
-            <device-list
-                v-bind:isvisible="showList"
-                @onrefresh="onRefresh"
-                v-bind:devices="devices"
-                @onselectdevice="selectDevice"
-            />
-            <Activity
-                v-bind:isvisible="showContent"
-                @ondisconnect="disconnect"
-            />
+            <device-list v-bind:isvisible="showList" @onrefresh="onRefresh" v-bind:devices="devices" @onselectdevice="selectDevice"></device-list>
+            <activity v-bind:isvisible="showContent" @ondisconnect="disconnect"></activity>
         </content>
     </div>
     <script type="text/javascript" src="cordova.js"></script>
