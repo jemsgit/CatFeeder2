@@ -1,8 +1,13 @@
 import Vue from 'vue';
+import { Button, Slider } from 'ant-design-vue';
 import bluetoothService from './bluetoothService';
 import Activity from './components/activity/activity.vue';
 import DeviceList from './components/device-list/device-list.vue';
-import './styles.css'
+import 'ant-design-vue/dist/antd.css';
+import './styles.css';
+
+Vue.use(Button);
+Vue.use(Slider);
 
 var cordovaApp = {
     // Application Constructor
@@ -30,8 +35,8 @@ function createVueApp() {
         data: function() {
             return {
                 devices: [],
-                showList: true,
-                showContent: false,
+                showList: false,
+                showContent: true,
                 temp: null,
                 debug: '',
                 customCommand: ''
