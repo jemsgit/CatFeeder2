@@ -49,6 +49,9 @@ class BluetoothService {
     }
 
     async sendData(data) {
+        if(!this.deviceId || !this.service) {
+            throw Error;
+        }
         return await this.promisify(
             ble.write.bind(ble, this.deviceId, this.service, stringToBytes(data)));
     }

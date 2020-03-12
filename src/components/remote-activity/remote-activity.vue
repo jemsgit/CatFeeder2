@@ -1,8 +1,8 @@
 <template>
     <div class="content">
         <div class="overlay"><a-spin /></div>
-        <a-button @click="onDisconnect()">
-            Disconnect
+        <a-button @click="onBack()">
+            Back to BT
         </a-button>
         
         <form novalidate>
@@ -30,6 +30,10 @@
         <a-button @click="feed()">
             Feed!
         </a-button>
+        <a-input placeholder="say Mew" v-bind="message"/>
+        <a-button @click="sayMew()">
+            Mew!
+        </a-button>
     </div>
 </template>
 
@@ -44,34 +48,37 @@ export default {
         return {
             portionSize: 30,
             currentTime: null,
-            alarms: ['12:30']
+            alarms: ['12:30'],
+            message: ''
         }
     },
     methods: {
-        async onDisconnect(e) {
-            let result = await bluetoothService.disconnect();
-            if(result) {
-                this.$emit('ondisconnect', e);
-            }
+        onBack(e) {
+            console.log(e)
         },
         savePortion(e) {
             console.log(e)
-            await api.bluetooth.setPortionSize(e);
+            await api.remote.setPortionSize(e);
         },
         saveCurrentTime(e) {
             console.log(e)
-            await api.bluetooth.setTime(e);
+            await api.remote.setPortionSize(e);
         },
         saveAlarms(e) {
             console.log(e)
-            await api.bluetooth.setAlarm(e);
+            await api.remote.setPortionSize(e);
         },
         loadData() {
-            api.bluetooth.loadComplexData();
+            api.remote.loadComplexData();
         },
         feed() {
             console.log('feed')
-            await api.bluetooth.feed(e);
+            await api.remote.feed(e);
+        },
+        sayMew() {
+            console.log('feed')
+            await api.remote.sayMew(this.message);
+            this.message = ''
         }
     },
     components: {TimePicker}

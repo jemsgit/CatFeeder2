@@ -3,6 +3,7 @@
         <span class="device-list__title">Список устройств
             <a class="refresh-link" v-on:click.prevent="onRefresh">REFRESH</a>
         </span>
+        <div v-if="!devices.length">use remote?</div>
         <ul>
             <li
                 v-for="device in devices"
@@ -17,15 +18,29 @@
 </template>
 
 <script>
+import bluetoothService from '../../bluetoothService';
 export default {
-    props: ['devices', 'isvisible'],
+    props: ['isvisible'],
     name: 'device-list',
+    data: () => {
+        devices: []
+    },
+    mounted: () => {
+
+    },
     methods: {
+        getDevices() {
+            this.devices = [];
+            bluetoothService.getDevices((device) => { this.devices.push(device) });
+        },
         onRefresh(e) {
-            this.$emit('onrefresh', e);
+            this.getDevices();
         },
         onSelectDevice(device) {
-            this.$emit('onselectdevice', device);
+            let connected = await bluetoothService.connectToDevice(device.id);
+            if (connected) {
+                this.$emit('onselectdevice', device);
+            }
         }
     }
 }

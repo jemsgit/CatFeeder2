@@ -12,6 +12,7 @@
     "dependencies": {
         "@babel/runtime": "^7.7.4",
         "ant-design-vue": "^1.4.12",
+        "axois": "0.0.1-security",
         "cordova-android": "^8.1.0",
         "cordova-browser": "^6.0.0",
         "cordova-plugin-ble-central": "^1.2.4",
