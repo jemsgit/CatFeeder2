@@ -96,7 +96,7 @@ export default {
 }
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
     .content {
         &__overlay {
             position: absolute;
