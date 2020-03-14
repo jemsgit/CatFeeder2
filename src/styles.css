@@ -1,35 +1,10 @@
 #app {
-    background: black;
+    background: #7fa7f1;
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     top: 0;
-}
-
-.device-list__item {
-    background: white;
-    padding: 15px;
-    border: 1px green solid;
-    border-radius: 3px;
-    margin-top: 2px;
-}
-
-.device-list__title {
-    display: inline-block;
-    color: white;
-    font-size: 20px;
-    width: 100%;
-    text-align: center;
-}
-
-.device-list {
-    max-height: calc(100% - 120px);
-    overflow-y: auto;
-}
-
-.device-list ul {
-    padding-left: 0;
 }
 
 .content__button {
@@ -87,6 +62,3 @@
     border: 1px green solid;
     font-size: 20px;
 }
-
-
-

@@ -1,59 +1,56 @@
 <template>
     <div :class="b()">
-        <div :class="b('overlay')"><a-spin /></div>
+        <overlay :isvisible="loading"></overlay>
         <a-button @click="onDisconnect()" block>
             Disconnect
         </a-button>
         
         <form novalidate>
-            <time-picker
-                name="currentTime"
-                title="Текущее время кормушки"
-                v-bind:value="currentTime"
-                @onsave="saveCurrentTime"
-            ></time-picker>
+            <current-time
+                @save="saveCurrentTime"
+                :value="currentTime"
+            >
+            </current-time>
 
-            <div :class="b('alarms')">
-                <span :class="b('alarms-title')">Alarms settings</span>
-                <ul id="timers-list">
-                    <li v-for="alarm in alarms" :key="alarm">
-                        {{ alarm }}
-                        <a-button
-                            :class="b('delete-alarm')"
-                        >
-                            Delete
-                        </a-button>
-                    </li>
-                </ul>
-                <a-button
-                    v-if="alarms.length < 5"
-                    :class="b('add-button')"
-                >
-                    Add
-                </a-button>
-            </div>
+            <alarms
+                :alarms="alarms"
+                @ondelete="deleteAlarm"
+                @addalarm="addNewAlarm"
+            >
+            </alarms>
 
-            <div :class="b('portion')">
-                <label for="portion">Portion size</label>
-                <a-slider
-                    v-model="portionSize"
-                    :defaultValue="30"
-                    @change="savePortion"
-                    name="portion"
-                    id="portion"/>
-            </div>
+            <portion
+                :value="portionSize"
+                @save="savePortion"    
+            >
+            </portion>
+
         </form>
 
-        <a-button @click="feed()" :class="b('feed')">
+        <a-button
+            type="danger"
+            icon="download" 
+            size="large"
+            @click="feed()"
+            :class="b('feed-button')"
+        >
             Feed!
         </a-button>
+
     </div>
 </template>
 
 <script>
-import TimePicker from '../time-picker/time-picker';
+import CurrentTime from '../current-time/current-time';
+import Alarms from '../alarms/alarms';
+import Portion from '../portion/portion';
+import Overlay from '../overlay/overlay';
 import bluetoothService from '../../bluetoothService';
 import api from '../../api/api';
+import moment from 'moment';
+
+let timeoutId;
+
 export default {
     name: 'activity',
     props: ['isvisible'],
@@ -61,8 +58,9 @@ export default {
     data: () => {
         return {
             portionSize: 30,
-            currentTime: null,
-            alarms: ['12:30']
+            currentTime: '12:30',
+            alarms: ['12:30'],
+            loading: false
         }
     },
     methods: {
@@ -73,59 +71,56 @@ export default {
             }
         },
         async savePortion(e) {
-            console.log(e)
-            await api.bluetooth.setPortionSize(e);
+            //await api.bluetooth.setPortionSize(e);
         },
-        async aveCurrentTime(e) {
+        async saveCurrentTime(e) {
             console.log(e)
-            await api.bluetooth.setTime(e);
+            this.loading = true;
+            setTimeout(() => {
+                this.loading = false;
+            }, 1500)
+            //await api.bluetooth.setTime(e);
+        },
+        async addNewAlarm(e) {
+            this.loading = true;
+            setTimeout(() => {
+                this.loading = false;
+                this.alarms.push(e);
+            }, 1500)
+            
+        },
+        async deleteAlarm(index) {
+            console.log(index)
+            this.loading = true;
+            setTimeout(() => {
+                this.loading = false;
+                this.alarms.splice(index, 1);
+            }, 1500)
+            
+            //await api.bluetooth.deleteAlarm(index);
         },
         async saveAlarms(e) {
             console.log(e)
-            await api.bluetooth.setAlarm(e);
+            //await api.bluetooth.setAlarm(e);
         },
         loadData() {
-            api.bluetooth.loadComplexData();
+            //api.bluetooth.loadComplexData();
         },
         async feed() {
             console.log('feed')
-            await api.bluetooth.feed(e);
+            //await api.bluetooth.feed(e);
         }
     },
-    components: {TimePicker}
+    components: {CurrentTime, Alarms, Portion, Overlay}
 }
 </script>
 
 <style scoped>
     .content {
-        &__overlay {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(208, 222, 255, 0.8);
-            z-index: 20;
-
-            .ant-spin {
-                position: absolute;
-                top: 30%;
-                left: 50%;
-            }
-        }
-
-        &__alarms {
-            color: red;
-        }
-
-        &__alarms-title {
-            font-seze: 16px;
-            color: red;
-        }
-
-        &__portion-title {
-            font-seze: 16px;
-            color: red;
+        &__feed-button {
+            width: 300px;
+            display: block;
+            margin: 20px auto;
         }
     }
 </style>

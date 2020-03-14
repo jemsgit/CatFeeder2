@@ -1,49 +1,90 @@
 <template>
     <div class="time-picker">
-        <label for="name" class="time-picker__label">{{ title }}</label>
-        <a-time-picker v-model="time" @openChange="handleOpen" :open="open" format="HH:mm" class="time-picker__value">
-            <a-button slot="addon" slot-scope="panel" size="small" type="primary" @click="handleClose">
+        <label v-if="title" for="name" class="time-picker__label">{{ title }}</label>
+        <span v-if="!editing" class="time-picker__current-value">
+            {{ value }}
+        </span>
+
+        <a-button
+            v-if="editable && !editing"
+            size="large"
+            type="primary"
+            @click="editTime"
+            icon="edit"
+        >
+            Edit
+        </a-button>
+        <a-button
+            v-if="deleteable && !editing"
+            size="large"
+            type='danger'
+            @click="deleteTime"
+            icon="delete"
+        >
+            Delete
+        </a-button>
+
+        <div v-if="editing">
+            <a-time-picker v-model="time" format="HH:mm" size="large" class="time-picker__value">
+            </a-time-picker>
+            <a-button size="large" type="primary" @click="save()" icon="save">
                 Save
             </a-button>
-        </a-time-picker>
+            <a-button size="large" type="danger" @click="cancel()" icon='close-circle'>
+                Cancel
+            </a-button>
+        </div>
     </div>
 </template>
 
 <script>
+import moment from 'moment';
 export default {
     name: 'time-picker',
-    props: ['name', 'title', 'value'],
+    props: ['name', 'title', 'value', 'editable', 'deleteable'],
     data: () => {
         return {
-            time: '12:30',
-            open: false
+            time: null,
+            editing: false
         }
     },
     methods: {
-        savePortion(e) {
-            console.log(e)
+        save(e) {
+            this.$emit('onsave', this.time.format('HH:mm'));
+            this.editing = false;
         },
-        handleOpen(e) {
-            this.currentTimeOpen = true;
+        cancel(e) {
+            this.editing = false;
         },
-        handleClose(e) {
-            this.currentTimeOpen = false;
-            this.$emit('onsave', e)
+        editTime(e) {
+            this.time = moment();
+            this.editing = true;
         },
+        deleteTime() {
+            this.$emit('ondelete');
+        }
     }
 }
 </script>
 
 <style scoped>
-    .time-picker__label {
-        font-size: 16px;
-        color: red;
-        display: block;
+    .time-picker {
         text-align: center;
-    }
 
-    .time-picker__value {
-        display: block;
-        margin: 0 auto;
+        &__label {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            display: block;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        &__current-value {
+            font-size: 22px;
+            font-weight: 500;
+            color: white;
+        }
+
     }
 </style>

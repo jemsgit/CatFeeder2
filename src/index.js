@@ -29,7 +29,7 @@ var cordovaApp = {
 };
 
 cordovaApp.initialize();
-
+createVueApp()
 let intevalId = null;
 
 function createVueApp() {
@@ -56,7 +56,7 @@ function createVueApp() {
                 this.showContent = false;
             },
             setBTDebug: function() {
-                bluetoothService.setDebug(this.updateLog.bind(this))
+                //bluetoothService.setDebug(this.updateLog.bind(this))
             },
             updateLog: function(data) {
                 this.debug += '\r\n' + data;
@@ -64,7 +64,7 @@ function createVueApp() {
                 //debugElement.scrollTop = debugElement.scrollHeight;
             },
             sendCustomCommand: async function() {
-                await bluetoothService.sendData(this.customCommand);
+                //await bluetoothService.sendData(this.customCommand);
                 this.customCommand = ''
             }
         },

@@ -19,6 +19,7 @@
         "cordova-plugin-ble-central": "^1.2.4",
         "cordova-plugin-webpack": "^0.4.7",
         "cordova-plugin-whitelist": "1",
+        "moment": "^2.24.0",
         "vue": "^2.6.10",
         "vue-bem-cn": "^1.1.1",
         "vue-pull-refresh": "^0.2.7"
@@ -65,7 +66,6 @@
             "cordova-plugin-webpack": {}
         },
         "platforms": [
-            "android",
             "browser"
         ]
     }
