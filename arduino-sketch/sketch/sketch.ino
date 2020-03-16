@@ -21,7 +21,7 @@ Servo myservo;
 SoftwareSerial mySerial(10, 11);
 
 bool isAlarm = false;
-bool UARTListen = true;
+bool UARTListen = false;
 int closeAngle = 160;
 int openAngle = 60;
 String message;
@@ -47,12 +47,15 @@ void setup()
   clock.clearAlarm2();
   setInterruptionMode();
   // Manual (Year, Month, Day, Hour, Minute, Second)
-  //clock.setDateTime(2018, 7, 7, 20, 18, 0);
-  alarms[0] = defaultAlarm;
-  setNextAlarm();
-  //clock.setAlarm1(0, 4, 0, 0, DS3231_MATCH_H_M_S);
+  clock.setDateTime(2018, 7, 7, 20, 18, 0);
+  setInitialAlarm();
   
   // Attach Interrput 0. In Arduino UNO connect DS3231 INT to Arduino Pin 2
+}
+
+void setInitialAlarm() {
+    alarms[0] = defaultAlarm;
+    setNextAlarm();
 }
 
 void setInterruptionMode() {
@@ -141,9 +144,9 @@ int getMinute() {
     return atoi(minute);
 }
 
-bool setTime(String daetTime) {
+bool setTime(String dateTime) {
   int date[5];
-  parseTime(daetTime, date, 5);
+  parseTime(dateTime, date, 5);
   // Manual (Year, Month, Day, Hour, Minute, Second)
   clock.setDateTime(date[0], date[1], date[2], date[3], date[4], 0);
   return true; 
@@ -281,9 +284,6 @@ void loop()
     feed();
     setNextAlarm();
   } else if(UARTListen){
-    if(sleepStartMinute < 0){
-      updateSleepTime();
-    }
    if (mySerial.available())
      {  
        message = mySerial.readString();//прочитать из порта
@@ -291,7 +291,6 @@ void loop()
        parseMessage(message,data);
        String command = data[0];
        String params = data[1];
-       sendPackage(getTime());
        if(command == "wake"){
           updateSleepTime();
           sendPackage("woke");
@@ -313,8 +312,7 @@ void loop()
        }
        Serial.println(command); //отправить в другой порт
      }
-    if (Serial.available())
-     {  
+    if (Serial.available()) {  
        message = Serial.readString();//прочитать из порта
        mySerial.println(message); //отправить в другой порт - debug
      }
