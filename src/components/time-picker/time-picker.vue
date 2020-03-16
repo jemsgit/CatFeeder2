@@ -1,38 +1,46 @@
 <template>
-    <div class="time-picker">
-        <label v-if="title" for="name" class="time-picker__label">{{ title }}</label>
-        <span v-if="!editing" class="time-picker__current-value">
-            {{ value }}
-        </span>
+    <div :class="b()">
+        <label v-if="title" for="name" :class="b('label')">{{ title }}</label>
+        <div v-if="!editing" :class="b('content')">
+            <span :class="b('current-value')">
+                {{ value }}
+            </span>
+            <section :class="b('buttons')">
+                <a-button
+                    v-if="editable && !editing"
+                    size="large"
+                    type="default"
+                    @click="editTime"
+                    icon="edit"
+                >
+                </a-button>
+                <a-button
+                    v-if="deleteable && !editing"
+                    size="large"
+                    type='danger'
+                    @click="deleteTime"
+                    icon="close-circle"
+                >
+                </a-button>
+            </section>
+        </div>
 
-        <a-button
-            v-if="editable && !editing"
-            size="large"
-            type="primary"
-            @click="editTime"
-            icon="edit"
-        >
-            Edit
-        </a-button>
-        <a-button
-            v-if="deleteable && !editing"
-            size="large"
-            type='danger'
-            @click="deleteTime"
-            icon="delete"
-        >
-            Delete
-        </a-button>
-
-        <div v-if="editing">
-            <a-time-picker v-model="time" format="HH:mm" size="large" class="time-picker__value">
+        <div v-if="editing" :class="b('content')">
+            <a-time-picker
+                v-model="time"
+                format="HH:mm"
+                size="large"
+                :class="b('value')"
+                popupClassName="mobile-timepicker">
             </a-time-picker>
-            <a-button size="large" type="primary" @click="save()" icon="save">
-                Save
-            </a-button>
-            <a-button size="large" type="danger" @click="cancel()" icon='close-circle'>
-                Cancel
-            </a-button>
+            <section :class="b('buttons')">
+                <a-button size="large" type="default" @click="save()" icon="save" :disabled="!isTimeValid">
+                    Save
+                </a-button>
+                <a-button size="large" type="danger" @click="cancel()" icon='close-circle'>
+                    Cancel
+                </a-button>
+            </section>
         </div>
     </div>
 </template>
@@ -42,6 +50,7 @@ import moment from 'moment';
 export default {
     name: 'time-picker',
     props: ['name', 'title', 'value', 'editable', 'deleteable'],
+    block: 'time-picker',
     data: () => {
         return {
             time: null,
@@ -63,13 +72,19 @@ export default {
         deleteTime() {
             this.$emit('ondelete');
         }
+    },
+    computed: {
+        isTimeValid: function() {
+            console.log(this.time)
+            return moment(this.time).isValid()
+        }
     }
 }
 </script>
 
 <style scoped>
     .time-picker {
-        text-align: center;
+        padding: 10px 20px;
 
         &__label {
             font-size: 16px;
@@ -77,14 +92,30 @@ export default {
             color: white;
             display: block;
             margin-bottom: 10px;
-            text-align: center;
+        }
+
+        &__content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
         }
 
         &__current-value {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 500;
             color: white;
         }
 
+    }
+
+    .mobile-timepicker {
+        .ant-time-picker-panel-combobox {
+            zoom: 1.5;
+        }
+
+        .ant-time-picker-panel-inner {
+            font-size: 18px;
+        }
     }
 </style>

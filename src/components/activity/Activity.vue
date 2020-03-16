@@ -1,7 +1,7 @@
 <template>
     <div :class="b()">
         <overlay :isvisible="loading"></overlay>
-        <a-button @click="onDisconnect()" block>
+        <a-button @click="onDisconnect()" block size="large" type="danger">
             Disconnect
         </a-button>
         
@@ -9,6 +9,7 @@
             <current-time
                 @save="saveCurrentTime"
                 :value="currentTime"
+                :class="b('time-settings')" 
             >
             </current-time>
 
@@ -16,12 +17,14 @@
                 :alarms="alarms"
                 @ondelete="deleteAlarm"
                 @addalarm="addNewAlarm"
+                :class="b('alarms-settings')" 
             >
             </alarms>
 
             <portion
                 :value="portionSize"
-                @save="savePortion"    
+                @save="savePortion"
+                :class="b('portion-settings')"   
             >
             </portion>
 
@@ -70,7 +73,8 @@ export default {
                 this.$emit('ondisconnect', e);
             }
         },
-        async savePortion(e) {
+        async savePortion(value) {
+            this.portionSize = value
             //await api.bluetooth.setPortionSize(e);
         },
         async saveCurrentTime(e) {
@@ -117,10 +121,19 @@ export default {
 
 <style scoped>
     .content {
+        &__time-settings {
+            margin-top: 20px;
+        }
+
+        &__portion-settings,
+        &__alarms-settings{
+            margin-top: 40px;
+        }
+
         &__feed-button {
-            width: 300px;
+            width: 200px;
             display: block;
-            margin: 20px auto;
+            margin: 50px auto;
         }
     }
 </style>

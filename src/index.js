@@ -39,8 +39,8 @@ function createVueApp() {
         data: function() {
             return {
                 devices: [],
-                showList: false,
-                showContent: true,
+                showList: true,
+                showContent: false,
                 debug: '',
                 customCommand: ''
             }

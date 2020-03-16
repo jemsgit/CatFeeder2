@@ -7,6 +7,15 @@
     top: 0;
 }
 
+.mobile-timepicker {
+    .ant-time-picker-panel-combobox {
+        zoom: 1.5;
+    }
+    .ant-time-picker-panel-inner {
+        font-size: 18px;
+    }
+}
+
 .content__button {
     width: 100%;
     padding: 10px;
