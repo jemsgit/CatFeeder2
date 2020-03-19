@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Button, Slider, Spin, TimePicker } from 'ant-design-vue';
+import { Button, Slider, Spin, TimePicker, Icon } from 'ant-design-vue';
 import vueBemCn from 'vue-bem-cn';
 import bluetoothService from './bluetoothService';
 import Activity from './components/activity/activity.vue';
@@ -12,6 +12,7 @@ Vue.use(Button);
 Vue.use(Slider);
 Vue.use(Spin);
 Vue.use(TimePicker);
+Vue.use(Icon);
 
 var cordovaApp = {
     // Application Constructor
@@ -29,7 +30,7 @@ var cordovaApp = {
 };
 
 cordovaApp.initialize();
-createVueApp()
+//createVueApp()
 let intevalId = null;
 
 function createVueApp() {
@@ -42,21 +43,19 @@ function createVueApp() {
                 showList: true,
                 showContent: false,
                 debug: '',
-                customCommand: ''
+                customCommand: '',
+                connecting: false
             }
         },
         methods: {
             onSelectDevice: function(device) {
-                this.showList = false;
                 this.showContent = true;
+                this.showList = false;
             },
             disconnect: async function() {
                 console.log(12312)
                 this.showList = true;
                 this.showContent = false;
-            },
-            setBTDebug: function() {
-                //bluetoothService.setDebug(this.updateLog.bind(this))
             },
             updateLog: function(data) {
                 this.debug += '\r\n' + data;
@@ -66,16 +65,6 @@ function createVueApp() {
             sendCustomCommand: async function() {
                 //await bluetoothService.sendData(this.customCommand);
                 this.customCommand = ''
-            }
-        },
-        computed: {
-            temperature: function() {
-                if (this.temp) {
-                    this.updateLog(this.temp);
-                    let temp = parseInt(this.temp, 16);
-                    return temp - 40 + ' °C';
-                }
-                return '';
             }
         }
     })

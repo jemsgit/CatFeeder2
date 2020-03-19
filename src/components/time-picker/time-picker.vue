@@ -35,10 +35,8 @@
             </a-time-picker>
             <section :class="b('buttons')">
                 <a-button size="large" type="default" @click="save()" icon="save" :disabled="!isTimeValid">
-                    Save
                 </a-button>
                 <a-button size="large" type="danger" @click="cancel()" icon='close-circle'>
-                    Cancel
                 </a-button>
             </section>
         </div>
@@ -105,6 +103,13 @@ export default {
             font-size: 28px;
             font-weight: 500;
             color: white;
+        }
+
+        &__buttons {
+            button {
+                width: 50px;
+                margin-left: 10px;
+            }
         }
 
     }

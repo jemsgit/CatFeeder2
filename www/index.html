@@ -13,8 +13,8 @@
 <body>
     <div id="app">
         <content>
-            <device-list v-bind:isvisible="showList" v-bind:devices="devices" @onselectdevice="onSelectDevice"></device-list>
-            <activity v-bind:isvisible="showContent" @ondisconnect="disconnect"></activity>
+            <device-list v-if="showList" v-bind:devices="devices" @onselectdevice="onSelectDevice"></device-list>
+            <activity v-if="showContent" @ondisconnect="disconnect"></activity>
         </content>
     </div>
     <script type="text/javascript" src="cordova.js"></script>

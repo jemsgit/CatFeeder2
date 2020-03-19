@@ -39,6 +39,7 @@
         >
             Feed!
         </a-button>
+        <span class="feed-success">Yammy!</span>
 
     </div>
 </template>
@@ -112,6 +113,11 @@ export default {
         },
         async feed() {
             console.log('feed')
+            let el = document.querySelector('.feed-success')
+            el.classList.add('visible');
+            setTimeout(()=> {
+                el.classList.remove('visible')
+            }, 200)
             //await api.bluetooth.feed(e);
         }
     },
@@ -133,7 +139,23 @@ export default {
         &__feed-button {
             width: 200px;
             display: block;
-            margin: 50px auto;
+            margin: 50px auto 10px;
+        }
+
+        .feed-success {
+            display: block;
+            opacity: 0;
+            color: #fdd923;
+            font-size: 20px;
+            font-weight: 500;
+            text-align: center;
+            transition: opacity 2s;
+        }
+
+        .feed-success.visible {
+            opacity: 1;
+            color: green;
+            transition: opacity 0.2s;
         }
     }
 </style>

@@ -1,7 +1,8 @@
 <template>
-    <div v-if="isvisible" class="device-list">
-        <span class="device-list__title">Список устройств
-            <a class="refresh-link" v-on:click.prevent="onRefresh">REFRESH</a>
+    <div class="device-list">
+        <overlay :isvisible="connecting"></overlay>
+        <span class="device-list__title">Devices
+            <a-icon class="device-list__update" type="reload" v-on:click.prevent="onRefresh"/>
         </span>
         <div v-if="!devices.length">use remote?</div>
         <ul>
@@ -18,17 +19,18 @@
 </template>
 
 <script>
+import Overlay from '../overlay/overlay';
 import bluetoothService from '../../bluetoothService';
 export default {
-    props: ['isvisible'],
     name: 'device-list',
     data: () => {
         return {
-            devices: []
+            devices: [],
+            connecting: false
         }
     },
-    mounted: () => {
-
+    mounted: function() {
+        this.getDevices();
     },
     methods: {
         getDevices() {
@@ -39,12 +41,15 @@ export default {
             this.getDevices();
         },
         async onSelectDevice(device) {
+            this.connecting = true;
             let connected = await bluetoothService.connectToDevice(device.id);
             if (connected) {
                 this.$emit('onselectdevice', device);
             }
+            this.connecting = false;
         }
-    }
+    },
+    components: {Overlay}
 }
 </script>
 

@@ -1,10 +1,7 @@
 #app {
     background: #7fa7f1;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
+    overflow: auto;
+    height: 100%;
 }
 
 .mobile-timepicker {
@@ -27,47 +24,4 @@
     font-size: 40px;
     text-align: center;
     color: white;
-}
-
-.debug {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 120px;
-    color: green;
-}
-
-.debug p {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 30;
-    height: 90px;
-    overflow: auto;
-    display: block;
-    white-space: pre-line;
-    margin-bottom: 0;
-    line-height: 10px;
-}
-
-.debug-form {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    margin-bottom: 0;
-}
-
-.refresh-link {
-    float: right;
-    font-size: 16px;
-}
-
-.custom-command {
-    height: 30px;
-    background: black;
-    color: green;
-    width: 100%;
-    border: 1px green solid;
-    font-size: 20px;
 }

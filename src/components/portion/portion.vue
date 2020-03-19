@@ -69,10 +69,24 @@ export default {
             display: block;
         }
 
-        &__slider {
+        &__slider { 
             margin: 10px 20px;
         }
-    }
 
-        
+        .ant-slider-handle {
+            width: 25px;
+            height: 25px;
+            margin-top: -10px;
+        }
+    }  
+</style>
+
+<style>
+    .portion {
+        .ant-slider-handle {
+            width: 25px;
+            height: 25px;
+            margin-top: -10px;
+        }
+    }  
 </style>

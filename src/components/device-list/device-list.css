@@ -6,6 +6,12 @@
     margin-top: 2px;
 }
 
+.device-list__update {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+}
+
 .device-list__title {
     display: inline-block;
     color: white;
