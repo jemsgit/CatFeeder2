@@ -7,6 +7,14 @@
             </span>
             <section :class="b('buttons')">
                 <a-button
+                    v-if="syncing && !editing"
+                    size="large"
+                    type="default"
+                    @click="syncTime"
+                    icon="sync"
+                >
+                </a-button>
+                <a-button
                     v-if="editable && !editing"
                     size="large"
                     type="default"
@@ -47,7 +55,7 @@
 import moment from 'moment';
 export default {
     name: 'time-picker',
-    props: ['name', 'title', 'value', 'editable', 'deleteable'],
+    props: ['name', 'title', 'value', 'editable', 'deleteable', 'syncing', 'format'],
     block: 'time-picker',
     data: () => {
         return {
@@ -57,7 +65,8 @@ export default {
     },
     methods: {
         save(e) {
-            this.$emit('onsave', this.time.format('HH:mm'));
+            let format = this.format || 'HH:mm'
+            this.$emit('onsave', this.time.format(format));
             this.editing = false;
         },
         cancel(e) {
@@ -69,6 +78,9 @@ export default {
         },
         deleteTime() {
             this.$emit('ondelete');
+        },
+        syncTime() {
+            this.$emit('onsave', (moment()).format('HH:mm'));
         }
     },
     computed: {

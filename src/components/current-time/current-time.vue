@@ -3,7 +3,9 @@
         name="currentTime"
         title="Current time"
         :value="value"
-        editable="true"
+        :editable="true"
+        :syncing="true"
+        format="YYYY:MM:DD:H:mm"
         @onsave="save"
     ></time-picker>
 </template>

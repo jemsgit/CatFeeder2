@@ -57,7 +57,6 @@ let timeoutId;
 
 export default {
     name: 'activity',
-    props: ['isvisible'],
     block: 'content',
     data: () => {
         return {
@@ -66,6 +65,9 @@ export default {
             alarms: ['12:30'],
             loading: false
         }
+    },
+    mounted: async function() {
+        await this.loadData();
     },
     methods: {
         async onDisconnect(e) {
@@ -78,20 +80,27 @@ export default {
             this.portionSize = value
             //await api.bluetooth.setPortionSize(e);
         },
-        async saveCurrentTime(e) {
-            console.log(e)
+        async saveCurrentTime(time) {
+            console.log(time)
             this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 1500)
-            //await api.bluetooth.setTime(e);
+            try {
+                await api.bluetooth.setTime(time);
+                this.currentTime = moment(time, "YYYY:MM:DD:HH:mm").format("HH:mm");
+            } catch(er) {
+                console.log(er)
+            }
+            this.loading = false;
         },
-        async addNewAlarm(e) {
+        async addNewAlarm(alarm) {
+            console.log(alarm)
             this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
+            try {
+                await api.bluetooth.addAlarm(alarm);
                 this.alarms.push(e);
-            }, 1500)
+            } catch(er) {
+                console.log(er)
+            }
+            this.loading = false;
             
         },
         async deleteAlarm(index) {
@@ -108,8 +117,10 @@ export default {
             console.log(e)
             //await api.bluetooth.setAlarm(e);
         },
-        loadData() {
-            //api.bluetooth.loadComplexData();
+        async loadData() {
+            console.log('ask for data');
+            let data = await api.bluetooth.loadComplexData();
+            console.log(data);
         },
         async feed() {
             console.log('feed')
@@ -118,7 +129,7 @@ export default {
             setTimeout(()=> {
                 el.classList.remove('visible')
             }, 200)
-            //await api.bluetooth.feed(e);
+            await api.bluetooth.feed();
         }
     },
     components: {CurrentTime, Alarms, Portion, Overlay}

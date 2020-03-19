@@ -23,10 +23,15 @@ class BluetoothService {
             let device = await promisify(ble.connect.bind(ble, uuid));
             if (device) {
                 this.deviceId = uuid;
-                this.service = device.characteristics.find(function(item) {
+                let service = device.characteristics.find(function(item) {
                     return item.properties.includes('Read') &&
                         item.properties.includes('WriteWithoutResponse');
                 });
+                if (service) {
+                    this.service = service.service;
+                    this.characteristic = service.characteristic
+                }
+                this.listen();
                 result = true;
             }
         } catch (e) {
@@ -41,6 +46,7 @@ class BluetoothService {
             await promisify(ble.disconnect.bind(ble, this.deviceId));
             this.deviceId = null;
             this.service = null;
+            this.characteristic = null;
             result = true;
         } catch (e) {
             result = false;
@@ -49,33 +55,37 @@ class BluetoothService {
     }
 
     async sendData(data) {
-        if(!this.deviceId || !this.service) {
+        if (!this.deviceId || !this.service) {
             throw Error;
         }
-        return await this.promisify(
-            ble.write.bind(ble, this.deviceId, this.service, stringToBytes(data)));
+        return await promisify(
+            ble.write.bind(ble, this.deviceId, this.service, this.characteristic, stringToBytes(data)));
     }
 
     listen() {
+        let message = '';
         ble.startNotification(this.deviceId, this.service, this.characteristic, (data) => {
             message += bytesToString(data);
             if (message.includes('\r\n\r\n')) {
                 this.incomingMessage = message.replace(/\r\n\r\n/g, '');
-                success(this.incomingMessage);
-                this.incomingMessage = null;
+                message = '';
             }
         }, () => { console.log('error') });
     }
 
     async getAnswer() {
+        this.incomingMessage = null;
         return new Promise((res, rej) => {
             let intId = setInterval(() => {
                 if (this.incomingMessage) {
-                    res(this.incomingMessage);
+                    let data = this.incomingMessage;
                     this.incomingMessage = null;
+                    console.log(data)
                     clearInterval(intId);
+                    res(data);
                 } else if (this.error) {
                     rej(this.error);
+                    this.incomingMessage = null;
                     this.error = null;
                     clearInterval(intId);
                 }

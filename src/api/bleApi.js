@@ -1,38 +1,75 @@
 import bluetoothService from '../bluetoothService';
+import { wait } from '../utils';
 
 async function getTime() {
-    await bluetoothService.sendData('getTime');
-    let answer = await bluetoothService.getAnswer();
+    let answer;
+    try {
+        await wake();
+        await bluetoothService.sendData('getTime');
+        answer = await bluetoothService.getAnswer();
+    } catch (e) {
+        console.log(e)
+    }
     return answer;
 }
 
 async function getAlarms() {
-    await bluetoothService.sendData('getAlarms');
-    let answer = await bluetoothService.getAnswer();
+    let answer;
+    try {
+        await wake();
+        await bluetoothService.sendData('getAlarms');
+        answer = await bluetoothService.getAnswer();
+    } catch (e) {
+        console.log(e)
+    }
     return answer;
 }
 
 async function getPortionSize() {
-    await bluetoothService.sendData('getPortionSize');
-    let answer = await bluetoothService.getAnswer();
+    let answer;
+    try {
+        await wake();
+        await bluetoothService.sendData('getPortionSize');
+        answer = await bluetoothService.getAnswer();
+    } catch (e) {
+        console.log(e)
+    }
     return answer;
 }
 
 async function setTime(time) {
-    await bluetoothService.sendData(`getTime ${time}`);
-    let answer = await bluetoothService.getAnswer();
+    let answer;
+    try {
+        await wake();
+        await bluetoothService.sendData(`setTime-${time}`);
+        answer = await bluetoothService.getAnswer();
+    } catch (e) {
+        console.log(e)
+    }
     return answer;
 }
 
 async function addAlarm(alarm) {
-    await bluetoothService.sendData(`addAlarm ${alarm}`);
-    let answer = await bluetoothService.getAnswer();
+    let answer;
+    try {
+        await wake();
+        await bluetoothService.sendData(`addAlarm-${alarm}`);
+        answer = await bluetoothService.getAnswer();
+    } catch (e) {
+        console.log(e)
+    }
     return answer;
 }
 
 async function deleteAlarm(alarmIndex) {
-    await bluetoothService.sendData(`deleteAlarm ${alarmIndex}`);
-    let answer = await bluetoothService.getAnswer();
+    let answer;
+    try {
+        await wake();
+        await bluetoothService.sendData(`deleteAlarm ${alarmIndex}`);
+        answer = await bluetoothService.getAnswer();
+    } catch (e) {
+        console.log(e)
+    }
     return answer;
 }
 
@@ -43,6 +80,7 @@ async function setPortionSize(size) {
 }
 
 async function feed() {
+    await bluetoothService.sendData(`wake\r\n`);
     await bluetoothService.sendData(`feed`);
     let answer = await bluetoothService.getAnswer();
     return answer;
@@ -51,12 +89,19 @@ async function feed() {
 async function loadComplexData() {
     let time = await getTime();
     let alarms = await getAlarms();
-    let portionSize = await getPortionSize();
+    console.log(time);
+    console.log(alarms)
+        //let portionSize = await getPortionSize();
     return {
         time,
         alarms,
-        portionSize
+        portionSize: 30
     }
+}
+
+async function wake() {
+    await bluetoothService.sendData('wake');
+    await wait(1000);
 }
 
 export default {
