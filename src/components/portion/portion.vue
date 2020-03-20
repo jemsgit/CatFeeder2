@@ -4,9 +4,9 @@
         <a-slider
             v-model="portion"
             :marks="marks"
-            :min="15"
-            :max="50"
-            :defaultValue="30"
+            :min="40"
+            :max="130"
+            :defaultValue="50"
             @change="save"
             name="portion"
             id="portion"
@@ -22,16 +22,16 @@ export default {
     props: ['value'],
     data() {
         return {
-            portion: 0,
+            portion: 50,
             marks: {
-                15: {
+                40: {
                     style: {
                         color: 'white',
                         'font-weight': 600
                     },
                     label: 'Tiny',
                 },
-                50: {
+                130: {
                     style: {
                         color: 'white',
                         'font-weight': 600
@@ -45,6 +45,11 @@ export default {
     mounted: function () {
         this.portion = this.value;
     },
+    watch: { 
+      	value: function(newVal, oldVal) {
+          this.portion = this.newVal;
+        }
+    },
     methods: {
         save(e) {
             if(timeoutId) {
@@ -52,7 +57,7 @@ export default {
             }
             timeoutId = setTimeout(() => {
                 this.$emit('save', this.portion)
-            }, 1500);
+            }, 500);
         }
     }
 }

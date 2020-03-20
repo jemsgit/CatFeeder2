@@ -60,9 +60,9 @@ export default {
     block: 'content',
     data: () => {
         return {
-            portionSize: 30,
-            currentTime: '12:30',
-            alarms: ['12:30'],
+            portionSize: 50,
+            currentTime: '',
+            alarms: [],
             loading: false
         }
     },
@@ -74,62 +74,106 @@ export default {
             let result = await bluetoothService.disconnect();
             if(result) {
                 this.$emit('ondisconnect', e);
+            } else {
+                this.showErrorMessage('You are here forever');
             }
         },
         async savePortion(value) {
-            this.portionSize = value
-            //await api.bluetooth.setPortionSize(e);
+            this.loading = true;
+            try {
+                await api.bluetooth.setPortionSize(value);
+                this.portionSize = value;
+            } catch(e) {
+                console.log(e);
+                this.showErrorMessage('Error data loading');
+            } finally {
+                this.loading = false;
+            }
+            
         },
         async saveCurrentTime(time) {
-            console.log(time)
             this.loading = true;
             try {
                 await api.bluetooth.setTime(time);
                 this.currentTime = moment(time, "YYYY:MM:DD:HH:mm").format("HH:mm");
             } catch(er) {
-                console.log(er)
+                console.log(er);
+                this.showErrorMessage('Error data loading');
+            } finally {
+                this.loading = false;
             }
-            this.loading = false;
         },
         async addNewAlarm(alarm) {
             console.log(alarm)
             this.loading = true;
             try {
-                await api.bluetooth.addAlarm(alarm);
-                this.alarms.push(e);
+                let newAlarmList = await api.bluetooth.addAlarm(alarm);
+                this.alarms = newAlarmList;
             } catch(er) {
-                console.log(er)
+                console.log(er);
+                this.showErrorMessage('Error data loading');
+            } finally {
+                this.loading = false;
             }
-            this.loading = false;
             
         },
         async deleteAlarm(index) {
-            console.log(index)
             this.loading = true;
-            setTimeout(() => {
+            try {
+                let newAlarmList = await api.bluetooth.deleteAlarm(index);
+                this.alarms = newAlarmList;
+            } catch(e) {
+                console.log(e);
+                this.showErrorMessage('Error data loading');
+            } finally {
                 this.loading = false;
-                this.alarms.splice(index, 1);
-            }, 1500)
-            
-            //await api.bluetooth.deleteAlarm(index);
-        },
-        async saveAlarms(e) {
-            console.log(e)
-            //await api.bluetooth.setAlarm(e);
+            }
         },
         async loadData() {
-            console.log('ask for data');
-            let data = await api.bluetooth.loadComplexData();
-            console.log(data);
+            this.loading = true;
+            let data = {};
+            try {
+                data = await api.bluetooth.loadComplexData();
+                if(data) {
+                    if(!data.time || !data.alarms.length || !data.portionSize) {
+                        this.showErrorMessage('Some data wasnt loaded');
+                    }
+                    this.currentTime = data.time;
+                    this.alarms = data.alarms;
+                    this.portionSize = data.portionSize;
+                }
+            } catch(e) {
+                console.log('cant get data');
+                this.showErrorMessage('Error data loading');
+            } finally {
+                this.loading = false;
+            }
         },
         async feed() {
-            console.log('feed')
+            this.loading = true;
+            try {
+                let result = await api.bluetooth.feed();
+                this.showSuccessFeed();
+                this.showSuccessMessage('Yammy!');
+            } catch(e) {
+                console.log(e);
+                this.showErrorMessage('Error data loading');
+            } finally {
+                this.loading = false;
+            }
+        },
+        showSuccessFeed() {
             let el = document.querySelector('.feed-success')
             el.classList.add('visible');
             setTimeout(()=> {
                 el.classList.remove('visible')
             }, 200)
-            await api.bluetooth.feed();
+        },
+        showErrorMessage(data) {
+            this.$message.error(data);
+        },
+        showSuccessMessage(data) {
+            this.$message.success(data);
         }
     },
     components: {CurrentTime, Alarms, Portion, Overlay}

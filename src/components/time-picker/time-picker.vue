@@ -2,7 +2,7 @@
     <div :class="b()">
         <label v-if="title" for="name" :class="b('label')">{{ title }}</label>
         <div v-if="!editing" :class="b('content')">
-            <span :class="b('current-value')">
+            <span :class="b('current-value', {isactive})">
                 {{ value }}
             </span>
             <section :class="b('buttons')">
@@ -55,7 +55,7 @@
 import moment from 'moment';
 export default {
     name: 'time-picker',
-    props: ['name', 'title', 'value', 'editable', 'deleteable', 'syncing', 'format'],
+    props: ['name', 'title', 'value', 'editable', 'deleteable', 'syncing', 'format', 'isactive'],
     block: 'time-picker',
     data: () => {
         return {
@@ -80,7 +80,8 @@ export default {
             this.$emit('ondelete');
         },
         syncTime() {
-            this.$emit('onsave', (moment()).format('HH:mm'));
+            let format = this.format || 'HH:mm'
+            this.$emit('onsave', (moment()).format(format));
         }
     },
     computed: {
@@ -115,6 +116,10 @@ export default {
             font-size: 28px;
             font-weight: 500;
             color: white;
+
+            &--isactive {
+                color: yellow;
+            }
         }
 
         &__buttons {

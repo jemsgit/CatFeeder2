@@ -67,29 +67,39 @@ class BluetoothService {
         ble.startNotification(this.deviceId, this.service, this.characteristic, (data) => {
             message += bytesToString(data);
             if (message.includes('\r\n\r\n')) {
-                this.incomingMessage = message.replace(/\r\n\r\n/g, '');
+                this.incomingMessage = message.replace(/\r\n\r\n/g, '').trim();
+                if (!this.incomingMessage) {
+                    this.incomingMessage = "empty result";
+                }
                 message = '';
             }
         }, () => { console.log('error') });
     }
 
-    async getAnswer() {
+    async getResponse() {
         this.incomingMessage = null;
         return new Promise((res, rej) => {
+            let rejTimeout = setTimeout(() => {
+                rej('timeout')
+            }, 5000);
+
             let intId = setInterval(() => {
                 if (this.incomingMessage) {
                     let data = this.incomingMessage;
                     this.incomingMessage = null;
                     console.log(data)
                     clearInterval(intId);
+                    clearTimeout(rejTimeout);
                     res(data);
                 } else if (this.error) {
                     rej(this.error);
                     this.incomingMessage = null;
                     this.error = null;
                     clearInterval(intId);
+                    clearTimeout(rejTimeout);
                 }
-            }, 200)
+            }, 200);
+
         }, )
     }
 }

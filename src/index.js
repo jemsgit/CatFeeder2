@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Button, Slider, Spin, TimePicker, Icon } from 'ant-design-vue';
+import { Button, Slider, Spin, TimePicker, Icon, message } from 'ant-design-vue';
 import vueBemCn from 'vue-bem-cn';
 import bluetoothService from './bluetoothService';
 import Activity from './components/activity/activity.vue';
@@ -7,12 +7,19 @@ import DeviceList from './components/device-list/device-list.vue';
 import 'ant-design-vue/dist/antd.css';
 import './styles.css';
 
+message.config({
+    top: '100px',
+    duration: 2,
+    maxCount: 3,
+});
+
 Vue.use(vueBemCn, {});
 Vue.use(Button);
 Vue.use(Slider);
 Vue.use(Spin);
 Vue.use(TimePicker);
 Vue.use(Icon);
+Vue.prototype.$message = message;
 
 var cordovaApp = {
     // Application Constructor

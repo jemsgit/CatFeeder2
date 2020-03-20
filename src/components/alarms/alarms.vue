@@ -2,17 +2,18 @@
     <div :class="b()">
         <span :class="b('title')">Alarms settings</span>
         <ul id="timers-list" :class="b('list')">
-            <li v-for="(alarm, index) in alarms" :key="index">
+            <li v-for="(alarm) in alarms" :key="alarm.index">
                 <time-picker
                     name="index"
-                    v-bind:value="alarm"
+                    v-bind:value="alarm.value"
+                    :isactive="alarm.isActive"
                     deleteable="true"
-                    @ondelete="deleteAlarm(index)"
+                    @ondelete="deleteAlarm(alarm.index)"
                     :class="b('alarm-item')"
                 ></time-picker>
             </li>
         </ul>
-        <span v-if="!alarms || !alarms.length"> No alarms!</span>
+        <span v-if="!alarms || !alarms.length" :class="b('no-alarms')"> No alarms!</span>
         <div v-if="alarms && alarms.length < 5" :class="b('new-alarm')">
             <a-button
                 v-if="!newAlarmVisible"
@@ -119,6 +120,13 @@ export default {
             color: white;
             font-size: 16px;
             font-weight: 500;
+        }
+
+        &__no-alarms {
+            text-align: center;
+            display: block;
+            font-size: 20px;
+            color: #fffa48;
         }
     }
 
