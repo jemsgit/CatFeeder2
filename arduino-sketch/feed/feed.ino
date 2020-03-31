@@ -135,6 +135,7 @@ bool delAlr(int p) {
       if((p == 0) && (als[1] == "0")) {
         clk.clearAlarm1();
         curAlInd = -1;
+        mySer.println("-1");
       } else {
         setNAl();
       }
@@ -175,11 +176,11 @@ void setNAl() {
         nextAlIn = 0;
     }
     if(als[nextAlIn] != "0") {
-          curAlInd = nextAlIn;
-          int time[2];
-          parseTime(als[curAlInd], time, 2);
-          // setAlarm1(Date or Day, Hour, Minute, Second, Mode, Armed = true)
-          clk.setAlarm1(0, time[0], time[1], 0, DS3231_MATCH_H_M_S);
+        curAlInd = nextAlIn;
+        int time[2];
+        parseTime(als[curAlInd], time, 2);
+        // setAlarm1(Date or Day, Hour, Minute, Second, Mode, Armed = true)
+        clk.setAlarm1(0, time[0], time[1], 0, DS3231_MATCH_H_M_S);
     } else {
         curAlInd = -1;
         if(als[0] != "0") {
@@ -250,8 +251,7 @@ void sleepNow()         // here we put the arduino to sleep
     sleep_disable();         // first thing after waking from sleep:
     detachInterrupt(0);
     detachInterrupt(1);// disable sleep...                             
-    delay(500);
-    Serial.println("wake");                         
+    delay(500);                         
 }
 
 void wakeUpAlarm()        // here the interrupt is handled after wakeup
@@ -274,7 +274,6 @@ void updateSleepTime() {
 
 void ans(String d) {
   mySer.println(d + "\r\n\r\n");
-  Serial.println(d);
 }
 
 void loop()
@@ -288,9 +287,15 @@ void loop()
     if(slStM < 0){
       updateSleepTime();
     }
-   if (mySer.available())
-     {  
-       String mes = mySer.readString();//прочитать из порта
+    String mes = "";
+   if (Serial.available()) {
+      mes = Serial.readString();
+   }
+   if (mySer.available()) {
+      mes = mySer.readString();
+   }
+   if (mes != "")
+     {
        String d[2];
        parseM(mes,d);
        String com = d[0];
@@ -320,7 +325,6 @@ void loop()
        } else {
           ans(f);
        }
-       Serial.println(com); //отправить в другой порт
      }
      if(getMin() >= slStM){
         ULis = false;

@@ -9,24 +9,30 @@ function checkErrorResponse(resp) {
     }
 }
 
-async function getTime() {
-    await wake();
+async function getTime(needWake = true) {
+    if (needWake) {
+        await wake();
+    }
     await bluetoothService.sendData(config.api.getTime);
     let resp = await bluetoothService.getResponse();
     checkErrorResponse(resp);
     return timeParser(resp);
 }
 
-async function getAlarms() {
-    await wake();
+async function getAlarms(needWake = true) {
+    if (needWake) {
+        await wake();
+    }
     await bluetoothService.sendData(config.api.getAlarms);
     let resp = await bluetoothService.getResponse();
     checkErrorResponse(resp);
     return alarmsParser(resp);
 }
 
-async function getPortionSize() {
-    await wake();
+async function getPortionSize(needWake = true) {
+    if (needWake) {
+        await wake();
+    }
     await bluetoothService.sendData(config.api.getPortion);
     let resp = await bluetoothService.getResponse();
     checkErrorResponse(resp);
@@ -82,18 +88,19 @@ async function loadComplexData() {
     let time = null;
     let alarms = [];
     let portionSize;
+    await wake();
     try {
-        time = await getTime();
+        time = await getTime(false);
     } catch (e) {
         console.log(e)
     }
     try {
-        alarms = await getAlarms();
+        alarms = await getAlarms(false);
     } catch (e) {
         console.log(e)
     }
     try {
-        portionSize = await getPortionSize();
+        portionSize = await getPortionSize(false);
     } catch (e) {
         console.log(e)
     }

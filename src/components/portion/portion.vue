@@ -47,7 +47,7 @@ export default {
     },
     watch: { 
       	value: function(newVal, oldVal) {
-          this.portion = this.newVal;
+          this.portion = newVal;
         }
     },
     methods: {

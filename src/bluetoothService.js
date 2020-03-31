@@ -1,5 +1,6 @@
 import { stringToBytes, bytesToString, promisify } from './utils';
 
+export const EMPTY_RESULT = 'empty result';
 class BluetoothService {
     constructor() {
         this.deviceId = null;
@@ -69,7 +70,7 @@ class BluetoothService {
             if (message.includes('\r\n\r\n')) {
                 this.incomingMessage = message.replace(/\r\n\r\n/g, '').trim();
                 if (!this.incomingMessage) {
-                    this.incomingMessage = "empty result";
+                    this.incomingMessage = EMPTY_RESULT;
                 }
                 message = '';
             }
@@ -80,17 +81,22 @@ class BluetoothService {
         this.incomingMessage = null;
         return new Promise((res, rej) => {
             let rejTimeout = setTimeout(() => {
+                this.incomingMessage = '';
+                clearInterval(intId);
                 rej('timeout')
             }, 5000);
 
+            console.log('i set timeout' + rejTimeout)
+
             let intId = setInterval(() => {
+                console.log(rejTimeout);
                 if (this.incomingMessage) {
-                    let data = this.incomingMessage;
-                    this.incomingMessage = null;
-                    console.log(data)
-                    clearInterval(intId);
+                    console.log(this.incomingMessage)
+                    res(this.incomingMessage);
+                    console.log('i clear timeout' + rejTimeout)
                     clearTimeout(rejTimeout);
-                    res(data);
+                    clearInterval(intId);
+                    this.incomingMessage = null;
                 } else if (this.error) {
                     rej(this.error);
                     this.incomingMessage = null;

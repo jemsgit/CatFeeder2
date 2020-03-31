@@ -1,5 +1,5 @@
 import moment from 'moment';
-
+import { EMPTY_RESULT } from './bluetoothService';
 const activeSign = '**';
 
 export function timeParser(time) {
@@ -10,7 +10,7 @@ export function timeParser(time) {
 }
 
 export function alarmsParser(alarms) {
-    if (!alarms) {
+    if (!alarms || alarms == EMPTY_RESULT) {
         return [];
     }
     let list = alarms.split('\r\n');
