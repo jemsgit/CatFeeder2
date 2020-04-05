@@ -1,0 +1,75 @@
+{
+    "name": "com.catfeeder.js",
+    "displayName": "CatFeeder",
+    "version": "1.0.0",
+    "description": "A sample Apache Cordova application that responds to the deviceready event.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Apache Cordova Team",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@babel/runtime": "^7.7.4",
+        "ant-design-vue": "^1.4.12",
+        "axios": "^0.19.2",
+        "axois": "0.0.1-security",
+        "cordova-android": "^8.1.0",
+        "cordova-browser": "^6.0.0",
+        "cordova-plugin-ble-central": "^1.2.4",
+        "cordova-plugin-splashscreen": "^5.0.3",
+        "cordova-plugin-webpack": "^0.4.7",
+        "cordova-plugin-whitelist": "1",
+        "moment": "^2.24.0",
+        "vue": "^2.6.10",
+        "vue-bem-cn": "^1.1.1",
+        "vue-pull-refresh": "^0.2.7"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.7.4",
+        "@babel/plugin-transform-regenerator": "^7.7.4",
+        "@babel/plugin-transform-runtime": "^7.7.4",
+        "@babel/preset-env": "^7.7.4",
+        "@babel/preset-es2015": "^7.0.0-beta.53",
+        "@babel/preset-react": "^7.7.4",
+        "babel-loader": "^8.0.6",
+        "babel-runtime": "^6.26.0",
+        "cordova-plugin-whitelist": "^1.3.4",
+        "css-loader": "^3.2.0",
+        "postcss-loader": "^3.0.0",
+        "postcss-nested": "^4.2.1",
+        "postcss-preset-env": "^6.7.0",
+        "postcss": "6.0.21",
+        "postcss-calc": "6.0.1",
+        "postcss-color-function": "4.0.1",
+        "postcss-custom-media": "6.0.0",
+        "postcss-custom-properties": "7.0.0",
+        "postcss-discard-comments": "2.0.4",
+        "postcss-each": "0.10.0",
+        "postcss-for": "2.1.1",
+        "postcss-import": "11.1.0",
+        "postcss-inherit": "^4.0.3",
+        "postcss-mixins": "6.2.0",
+        "postcss-omit-import-tilde": "1.0.1",
+        "postcss-strip-units": "2.0.1",
+        "postcss-url": "7.3.0",
+        "source-map-support": "^0.5.16",
+        "vue-loader": "^15.7.2",
+        "vue-style-loader": "^4.1.2",
+        "vue-template-compiler": "^2.6.10",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10"
+    },
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-ble-central": {},
+            "cordova-plugin-webpack": {},
+            "cordova-plugin-splashscreen": {}
+        },
+        "platforms": [
+            "browser",
+            "android"
+        ]
+    }
+}

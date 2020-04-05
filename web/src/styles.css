@@ -1,0 +1,27 @@
+#app {
+    background: #7fa7f1;
+    overflow: auto;
+    height: 100%;
+}
+
+.mobile-timepicker {
+    .ant-time-picker-panel-combobox {
+        zoom: 1.5;
+    }
+    .ant-time-picker-panel-inner {
+        font-size: 18px;
+    }
+}
+
+.content__button {
+    width: 100%;
+    padding: 10px;
+    display: block;
+    font-size: 15px;
+}
+
+.content__main {
+    font-size: 40px;
+    text-align: center;
+    color: white;
+}
