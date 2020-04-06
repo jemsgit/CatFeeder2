@@ -34,15 +34,15 @@ async function getPortionSize() {
     return data;
 }
 
-async function setTime(time) {
+async function setTime(value) {
     let { method, url } = config.remoteApi.setTime
-    let res = await fetcher[method](url, { time });
+    let res = await fetcher[method](url, { value });
     return res;
 }
 
-async function addAlarm(alarm) {
+async function addAlarm(value) {
     let { method, url } = config.remoteApi.addAlarm
-    let res = await fetcher[method](url, { alarm });
+    let res = await fetcher[method](url, { value });
     return res;
 }
 
@@ -52,9 +52,9 @@ async function deleteAlarm(alarmIndex) {
     return res;
 }
 
-async function setPortionSize(size) {
+async function setPortionSize(value) {
     let { method, url } = config.remoteApi.setPortion
-    let res = await fetcher[method](url, { size });
+    let res = await fetcher[method](url, { value });
     return res;
 }
 
