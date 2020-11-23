@@ -18,11 +18,11 @@ Test of set-time routines for a DS3231 RTC
 
 DS3231 clk;
 RTCDateTime dt;
-SoftwareSerial mySer(2, 6);
+SoftwareSerial mySer(2, 7);
 
 bool iA = false;
 byte opAn = 100;
-String als[5] = {"04:00","0","0","0","0"};
+String als[5] = {"07:00","0","0","0","0"};
 byte curAlInd = -1;
 
 void setup()
@@ -30,13 +30,11 @@ void setup()
   Serial.begin(9600);
   mySer.begin(9600);
   clk.begin();
+  clk.enableOutput(false);
   clearRTCals();
   setIntMode();
-  // Manual (Year, Month, Day, Hour, Minute, Second)
-  clk.setDateTime(2020, 3, 3, 20, 00, 0);
   setNAl();
   setInterrupt();
-  // Attach Interrput 0. In Arduino UNO connect DS3231 INT to Arduino Pin 2
 }
 
 void clearRTCals() {
@@ -57,11 +55,14 @@ String getals() {
     String a = clk.dateFormat("H:i", at);
     int i = 0;
     while((i < ALC) && (als[i] != "0")){
+      if(i>0){
+        res += "\r\n";
+      }
       if(als[i] == a){
         res += "** ";
       }
       res += i;
-      res += " - " + als[i] + "\r\n";
+      res += " - " + als[i];
       i++;
     }
     return res;
@@ -102,6 +103,7 @@ bool addAlarm(String ti) {
               needSetNAl = true;
             } else {
               curAlInd+=1;
+              needSetNAl = true;
             }
           }
           res = true;
@@ -131,12 +133,15 @@ bool delAlr(int p) {
     }
     als[ALC-1] = "0";
     if(p == curAlInd){
-      if((p == 0) && (als[1] == "0")) {
+      if((p == 0) && (als[0] == "0")) {
         clk.clearAlarm1();
         curAlInd = -1;
       } else {
+        curAlInd-= 1;
         setNAl();
       }
+    } else if(p < curAlInd) {
+      curAlInd-= 1;
     }
     return true;
 }
@@ -233,13 +238,14 @@ void feed() {
 
 void setInterrupt()         // here we put the arduino to sleep
 {
-    delay(100);                     // so sleep is possible. just a safety pin
-    attachInterrupt(digitalPinToInterrupt(3),wakeUpAlarm, RISING); // use interrupt 0 (pin 2) and run function                            
+    delay(500);
+    attachInterrupt(digitalPinToInterrupt(3),wakeUpAlarm, FALLING); // use interrupt 0 (pin 2) and run function                            
     delay(500);                         
 }
 
 void wakeUpAlarm()        // here the interrupt is handled after wakeup
 {
+  Serial.println("wake");
   iA = true;
 }
 
@@ -263,8 +269,6 @@ void loop()
    bool sofSer = false;
    if (Serial.available()) {
       mes = Serial.readString();
-      mySer.println("1");
-      mySer.println(mes);
    }
    if (mySer.available()) {
       mes = mySer.readString();
