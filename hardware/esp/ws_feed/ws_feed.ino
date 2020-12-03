@@ -7,6 +7,7 @@
 WebSocketClient webSocketClient;
 WiFiClient client;
 SPIDMD dmd(5, 1);
+int TIMEOUT = 2000;
 
 int i = 0;
 const uint8_t *FONT = SystemFont5x7;
@@ -74,7 +75,7 @@ void processMessage(String message) {
 }
 
 String runCommand(String command, String params) {
-  if(command == "print") {
+  if(command == "print" || command == "ping") {
     setPrintMessage(params);
     return "true";
   } else {
@@ -84,10 +85,20 @@ String runCommand(String command, String params) {
 }
 
 String getAnswer() {
+  unsigned long start = millis();
+  String result = "";
   while(!Serial.available()) {
     delay(50);
+    if(millis() - start > TIMEOUT) {
+      result = "f";
+      break;
+    }
   }
-  return Serial.readString();
+  if(result == "") {
+    result = Serial.readString();
+  }
+  return result;
+  
 }
 
 void checkSerialData() {
