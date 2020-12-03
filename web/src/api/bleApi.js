@@ -61,10 +61,7 @@ async function deleteAlarm(alarmIndex) {
     await bluetoothService.sendData(config.api.deleteAlarm.replace('{value}', alarmIndex));
     let resp = await bluetoothService.getResponse();
     checkErrorResponse(resp);
-    console.log('delete!');
-    console.log(resp)
     resp = await getAlarms();
-    console.log(resp)
     return resp;
 }
 

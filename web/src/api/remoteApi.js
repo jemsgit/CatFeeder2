@@ -43,12 +43,14 @@ async function setTime(value) {
 async function addAlarm(value) {
     let { method, url } = config.remoteApi.addAlarm
     let res = await fetcher[method](url, { value });
+    res = await getAlarms();
     return res;
 }
 
 async function deleteAlarm(alarmIndex) {
     let { method, url } = config.remoteApi.deleteAlarm
     let res = await fetcher[method](url.replace('{value}', alarmIndex));
+    res = await getAlarms();
     return res;
 }
 
